@@ -216,6 +216,11 @@ def main_menu():
         player_name_text = font_input.render(current_player_name, True, WHITE)
         screen.blit(player_name_text, (player_input_rect.x + 5, player_input_rect.y + 5))
 
+        # Warning text if no name is entered
+        if not current_player_name:
+            warning_text = font.render("Please enter your name!", True, (255, 0, 0))
+            screen.blit(warning_text, (SCREEN_WIDTH // 2 - warning_text.get_width() // 2, SCREEN_HEIGHT // 2 + 150))
+
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -223,15 +228,17 @@ def main_menu():
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN and current_player_name:
-                    menu = False
-                if event.key == pygame.K_q:
+                if event.key == pygame.K_RETURN:
+                    if current_player_name:  # Only start the game if a name is entered
+                        menu = False
+                elif event.key == pygame.K_q:
                     pygame.quit()
                     exit()
-                if event.key == pygame.K_BACKSPACE:
+                elif event.key == pygame.K_BACKSPACE:
                     current_player_name = current_player_name[:-1]
                 else:
-                    current_player_name += event.unicode
+                    if len(current_player_name) < 20:  # Optional: Limit the length of the player name
+                        current_player_name += event.unicode
 
 def you_win():
     global current_score, previous_score, high_score
